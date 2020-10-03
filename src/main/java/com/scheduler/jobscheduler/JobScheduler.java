@@ -11,6 +11,10 @@ import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,19 +28,26 @@ public class JobScheduler {
     public CreateFileResponse dispatchCreateFileJob(CreateFileRequest message) {
         logger.info("dispatchCreateFileJob ENTER");
         final String jobGroup = SchedulerConstants.CREATE_FILE_JOB_GROUP;
-        final String jobName = Math.random() + "";
         try {
             Scheduler scheduler = schedulerFactory.getScheduler();
+
+            File tempFile = File.createTempFile(
+                    SchedulerConstants.CREATE_FILE_PREFIX,
+                    SchedulerConstants.CREATE_FILE_SUFFIX);
+            String filename = tempFile.getName();
+
             scheduler.scheduleJob(
                     JobBuilder.newJob().ofType(FileCreateJob.class)
-                            .withIdentity(jobName, jobGroup)
+                            .withIdentity(filename, jobGroup)
                             .build(),
                     TriggerBuilder.newTrigger()
-                            .forJob(jobName, jobGroup)
+                            .forJob(filename, jobGroup)
+                            .usingJobData(SchedulerConstants.SCHEDULED_AT_KEY, Date.from(Instant.now()).toString())
+                            .usingJobData(SchedulerConstants.FILENAME_KEY,filename)
                             .usingJobData(SchedulerConstants.MESSAGE_KEY, message.getMessage())
                             .startNow()
                             .build());
-        } catch (SchedulerException e) {
+        } catch (SchedulerException | IOException e) {
             logger.log(Level.SEVERE,
                     "Failed to create job", e);
             logger.severe("dispatchCreateFileJob EXIT");
