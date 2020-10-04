@@ -49,7 +49,14 @@ task writePom {
         }.withXml {
             asNode().appendNode('build').appendNode('plugins').appendNode('plugin').with {
                 appendNode('groupId', 'org.springframework.boot')
-                appendNode('artifactId','spring-boot-maven-plugin')
+                appendNode('artifactId', 'spring-boot-maven-plugin')
+                appendNode('version', '2.3.4.RELEASE')
+            }
+            asNode().appendNode('parent').with {
+                appendNode('groupId', 'org.springframework.boot')
+                appendNode('artifactId', 'spring-boot-starter-parent')
+                appendNode('version', '2.3.4.RELEASE')
+                appendNode('relativePath')
             }
         }.writeTo("pom.xml")
     }
