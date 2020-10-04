@@ -46,8 +46,12 @@ task writePom {
                     }
                 }
             }
+        }.withXml {
+            asNode().appendNode('build').appendNode('plugins').appendNode('plugin').with {
+                appendNode('groupId', 'org.springframework.boot')
+                appendNode('artifactId','spring-boot-maven-plugin')
+            }
         }.writeTo("pom.xml")
     }
 }
-
 build.finalizedBy(writePom)
