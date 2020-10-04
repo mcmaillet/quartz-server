@@ -44,23 +44,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>15.0</version>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>c3p0</artifactId>
-                    <groupId>com.mchange</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>HikariCP-java7</artifactId>
-                    <groupId>com.zaxxer</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
     <build>

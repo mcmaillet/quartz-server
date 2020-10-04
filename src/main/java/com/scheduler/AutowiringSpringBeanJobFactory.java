@@ -1,6 +1,5 @@
 package com.scheduler;
 
-import org.jetbrains.annotations.NotNull;
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -15,9 +14,8 @@ public class AutowiringSpringBeanJobFactory extends SpringBeanJobFactory impleme
         autowireCapableBeanFactory = applicationContext.getAutowireCapableBeanFactory();
     }
 
-    @NotNull
     @Override
-    protected Object createJobInstance(@NotNull TriggerFiredBundle bundle) throws Exception {
+    protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
         Object jobInstance = super.createJobInstance(bundle);
         autowireCapableBeanFactory.autowireBean(jobInstance);
         return jobInstance;
