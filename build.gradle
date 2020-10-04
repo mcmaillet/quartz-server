@@ -25,6 +25,8 @@ dependencies {
 
 	testCompileOnly 'org.projectlombok:lombok:1.18.12'
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+	implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
 }
 
 test {
