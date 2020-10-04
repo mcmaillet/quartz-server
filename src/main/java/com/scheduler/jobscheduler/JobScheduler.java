@@ -1,10 +1,8 @@
 package com.scheduler.jobscheduler;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.scheduler.SchedulerConstants;
 import com.scheduler.job.createfile.FileCreateJob;
 import com.scheduler.payload.CreateFileRequest;
@@ -18,11 +16,11 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Component
 public class JobScheduler {
@@ -34,18 +32,21 @@ public class JobScheduler {
     public ListJobsResponse listJobs() {
         Scheduler scheduler = schedulerFactory.getScheduler();
         try {
+            List<JobDTO> jobDTOs = new ArrayList<>();
+            for (TriggerKey triggerKey : scheduler.getTriggerKeys(GroupMatcher.anyGroup())) {
+                Trigger trigger = scheduler.getTrigger(triggerKey);
+                JobKey jobKey = trigger.getJobKey();
+                jobDTOs.add(JobDTO.builder()
+                        .group(jobKey.getGroup())
+                        .name(jobKey.getName())
+                        .nextFireTime(trigger.getNextFireTime())
+                        .build());
+            }
+
             ObjectMapper objectMapper = new ObjectMapper();
-
-            List<ListJobsDto> jobsDtos = scheduler.getJobKeys(GroupMatcher.anyGroup())
-                    .stream()
-                    .map(x -> ListJobsDto.builder()
-                            .group(x.getGroup())
-                            .name(x.getName())
-                            .build()
-                    ).collect(Collectors.toList());
-
+            objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
             return ListJobsResponse.builder()
-                    .message(objectMapper.writeValueAsString(jobsDtos))
+                    .message(objectMapper.writeValueAsString(jobDTOs))
                     .build();
         } catch (SchedulerException | JsonProcessingException e) {
             return ListJobsResponse.builder()
