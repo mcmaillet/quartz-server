@@ -19,6 +19,8 @@ public class FileCreateJob extends QuartzJobBean {
 
     @Autowired
     FileCreateJobValidator jobValidator;
+    @Autowired
+    FileCreator fileCreator;
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
@@ -36,29 +38,10 @@ public class FileCreateJob extends QuartzJobBean {
                                     .reduce((s, s2) -> s + ", " + s2).orElse("null")));
             return;
         }
-        final String filename = jobDataMap.getString(SchedulerConstants.FILENAME_KEY);
-        try (FileWriter fw = new FileWriter(new File(filename), true)) {
-            fw.write(
-                    String.format(
-                            "Message: %s",
-                            jobDataMap.getString(SchedulerConstants.MESSAGE_KEY)
-                    ) + System.lineSeparator());
-            fw.write(
-                    String.format(
-                            "Scheduled at: %s",
-                            jobDataMap.getString(SchedulerConstants.SCHEDULED_AT_KEY)
-                    ) + System.lineSeparator());
-            fw.write(
-                    String.format(
-                            "Execution timestamp: %s",
-                            Date.from(Instant.now())
-                    ) + System.lineSeparator());
-            logger.info(String.format(
-                    "FileCreatorJob wrote to file '%s'",
-                    filename));
-        } catch (IOException e) {
-            logger.log(Level.SEVERE,
-                    "Failed to create file", e);
-        }
+        fileCreator.create(FileCreatorParameters.builder()
+                .filename(jobDataMap.getString(SchedulerConstants.FILENAME_KEY))
+                .message(jobDataMap.getString(SchedulerConstants.MESSAGE_KEY))
+                .scheduledAt(jobDataMap.getString(SchedulerConstants.SCHEDULED_AT_KEY))
+                .build());
     }
 }

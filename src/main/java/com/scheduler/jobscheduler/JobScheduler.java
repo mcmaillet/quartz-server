@@ -36,7 +36,6 @@ public class JobScheduler {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
 
-
             List<ListJobsDto> jobsDtos = scheduler.getJobKeys(GroupMatcher.anyGroup())
                     .stream()
                     .map(x -> ListJobsDto.builder()
