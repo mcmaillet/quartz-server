@@ -27,8 +27,20 @@ dependencies {
 	testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
 
 	implementation 'org.springdoc:springdoc-openapi-ui:1.4.8'
+	implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.8.0'
 }
 
 test {
 	useJUnitPlatform()
 }
+
+task writePom {
+	doLast {
+		pom {
+			project {
+			}
+		}.writeTo("pom.xml")
+	}
+}
+
+build.finalizedBy(writePom)
