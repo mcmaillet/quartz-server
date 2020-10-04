@@ -14,9 +14,10 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-quartz'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-quartz', version: '2.3.4.RELEASE'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.3.4.RELEASE'
+
+	testImplementation('org.springframework.boot:spring-boot-starter-test:2.3.4.RELEASE') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	implementation 'org.jetbrains:annotations:15.0'
@@ -38,6 +39,9 @@ task writePom {
 	doLast {
 		pom {
 			project {
+				dependencies {
+
+				}
 			}
 		}.writeTo("pom.xml")
 	}
