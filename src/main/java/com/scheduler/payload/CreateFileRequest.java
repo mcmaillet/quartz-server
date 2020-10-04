@@ -1,13 +1,19 @@
 package com.scheduler.payload;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NonNull;
+
+import java.util.Date;
+
+@Builder
+@Data
 public class CreateFileRequest {
-    private String message;
+    private final String message;
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    @JsonDeserialize(using = DateDeserializers.DateDeserializer.class)
+    @NonNull
+    private final Date scheduledFor;
 }

@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class CreateFileResponse {
+public class ListJobsResponse {
     private final String message;
 }
