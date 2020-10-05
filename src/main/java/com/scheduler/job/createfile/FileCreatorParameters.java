@@ -9,4 +9,5 @@ class FileCreatorParameters {
     private final String filename;
     private final String message;
     private final String scheduledAt;
+    private final String scheduledFor;
 }

@@ -6,11 +6,6 @@ import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.Instant;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +15,7 @@ public class FileCreateJob extends QuartzJobBean {
     @Autowired
     FileCreateJobValidator jobValidator;
     @Autowired
-    FileCreator fileCreator;
+    FileCreatorFactory fileCreatorFactory;
 
     @Override
     protected void executeInternal(JobExecutionContext context) {
@@ -38,10 +33,11 @@ public class FileCreateJob extends QuartzJobBean {
                                     .reduce((s, s2) -> s + ", " + s2).orElse("null")));
             return;
         }
-        fileCreator.create(FileCreatorParameters.builder()
+        fileCreatorFactory.getFileCreator().create(FileCreatorParameters.builder()
                 .filename(jobDataMap.getString(SchedulerConstants.FILENAME_KEY))
                 .message(jobDataMap.getString(SchedulerConstants.MESSAGE_KEY))
                 .scheduledAt(jobDataMap.getString(SchedulerConstants.SCHEDULED_AT_KEY))
+                .scheduledFor(jobDataMap.getString(SchedulerConstants.SCHEDULED_FOR_KEY))
                 .build());
     }
 }

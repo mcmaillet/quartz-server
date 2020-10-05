@@ -7,5 +7,6 @@ public class SchedulerConstants {
 
     public static final String MESSAGE_KEY = "message";
     public static final String SCHEDULED_AT_KEY = "scheduled-at";
+    public static final String SCHEDULED_FOR_KEY = "scheduled-for";
     public static final String FILENAME_KEY = "filename";
 }

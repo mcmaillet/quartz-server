@@ -13,7 +13,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(classes = {
         FileCreateJob.class,
         FileCreateJobValidator.class,
-        FileCreator.class
+        FileCreatorFactory.class
 })
 class FileCreateJobTest {
     @InjectMocks
@@ -22,7 +22,7 @@ class FileCreateJobTest {
     @Mock
     private FileCreateJobValidator validator;
     @Mock
-    private FileCreator fileCreator;
+    private FileCreatorFactory fileCreatorFactory;
 
     @Test
     public void execute_isNotValid_doesNotCreateFile() {
@@ -31,18 +31,23 @@ class FileCreateJobTest {
 
         job.execute(new JobDataMap());
 
-        verifyNoInteractions(fileCreator);
+        verifyNoInteractions(fileCreatorFactory);
     }
 
     @Test
     public void execute_isValid_createsFileWithParameters() {
+        FileCreator fileCreator = mock(FileCreator.class);
+        
         when(validator.validateJobDataMap(any(JobDataMap.class)))
                 .thenReturn(true);
+        when(fileCreatorFactory.getFileCreator())
+                .thenReturn(fileCreator);
 
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(SchedulerConstants.FILENAME_KEY,"a file name");
-        jobDataMap.put(SchedulerConstants.MESSAGE_KEY,"hello world");
-        jobDataMap.put(SchedulerConstants.SCHEDULED_AT_KEY,"1 am");
+        jobDataMap.put(SchedulerConstants.FILENAME_KEY, "a file name");
+        jobDataMap.put(SchedulerConstants.MESSAGE_KEY, "hello world");
+        jobDataMap.put(SchedulerConstants.SCHEDULED_AT_KEY, "1 am");
+        jobDataMap.put(SchedulerConstants.SCHEDULED_FOR_KEY, "3 am");
 
         job.execute(jobDataMap);
 
@@ -50,6 +55,7 @@ class FileCreateJobTest {
                 .filename("a file name")
                 .message("hello world")
                 .scheduledAt("1 am")
+                .scheduledFor("3 am")
                 .build());
     }
 }

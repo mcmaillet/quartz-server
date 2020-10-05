@@ -66,13 +66,15 @@ public class JobScheduler {
                     SchedulerConstants.CREATE_FILE_SUFFIX);
             String filename = tempFile.getName();
 
+            Date scheduledFor = message.getScheduledFor();
+
             TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger()
                     .forJob(filename, jobGroup)
                     .usingJobData(SchedulerConstants.SCHEDULED_AT_KEY, Date.from(Instant.now()).toString())
+                    .usingJobData(SchedulerConstants.SCHEDULED_FOR_KEY, String.valueOf(scheduledFor))
                     .usingJobData(SchedulerConstants.FILENAME_KEY, filename)
                     .usingJobData(SchedulerConstants.MESSAGE_KEY, message.getMessage());
 
-            Date scheduledFor = message.getScheduledFor();
             if (scheduledFor.before(Date.from(Instant.now()))) {
                 triggerBuilder = triggerBuilder.startNow();
             } else {
