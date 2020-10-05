@@ -37,7 +37,7 @@ class FileCreateJobTest {
     @Test
     public void execute_isValid_createsFileWithParameters() {
         FileCreator fileCreator = mock(FileCreator.class);
-        
+
         when(validator.validateJobDataMap(any(JobDataMap.class)))
                 .thenReturn(true);
         when(fileCreatorFactory.getFileCreator())
