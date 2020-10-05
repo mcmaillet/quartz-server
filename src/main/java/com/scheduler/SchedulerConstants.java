@@ -9,4 +9,6 @@ public class SchedulerConstants {
     public static final String SCHEDULED_AT_KEY = "scheduled-at";
     public static final String SCHEDULED_FOR_KEY = "scheduled-for";
     public static final String FILENAME_KEY = "filename";
+    public static final String REQUEST_TOKEN_KEY = "token";
+    public static final String VALID_TOKEN_KEY = "TOKEN";
 }
